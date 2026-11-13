@@ -1,0 +1,24 @@
+name: Push to Hugging Face
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+jobs:
+  hf-push:
+    runs-on: ubuntu-latest
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      REPO : ${{ github.event.repository.name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+      - name: Setup LFS
+        run: |
+          git lfs install
+          git lfs migrate import --include="*.png,*.jpg,*.jpeg" --everything
+
+      - name : Push to HF
+        run: |
+          git push --force https://Anirban0011:$HF_TOKEN@huggingface.co/spaces/Anirban0011/$REPO master:main
